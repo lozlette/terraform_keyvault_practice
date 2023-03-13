@@ -20,6 +20,13 @@ resource "azurerm_key_vault" "practice_keyvault" {
   access_policy {
     tenant_id = 
     object_id = 
+    
 
   }
+
+  network_acls {
+    bypass = AzureServices
+    default_action = Allow
+  }
 }
+
