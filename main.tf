@@ -1,11 +1,26 @@
-provider "azurerm" {
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.47.0"
+    }
+  }
+}
 
+
+provider "azurerm" {
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy    = true
+      recover_soft_deleted_key_vaults = true
+    }
+  }
 }
 
 
 resource "azurerm_resource_group" "practice_resource_group" {
   name     = "practice_resource_group"
-  location = ""
+  location = var.location
 }
 
 resource "azurerm_network_security_group" "practice_sg" {
@@ -29,8 +44,8 @@ resource "azurerm_virtual_network" "practice_vnet" {
 
 }
 
-resource "azurerm_key_vault" "practice_keyvault" {
-  name                        = "practice_keyvault"
+resource "azurerm_key_vault" "practice-keyvault-01" {
+  name                        = "practice-keyvault"
   location                    = azurerm_resource_group.practice_resource_group.location
   resource_group_name         = azurerm_resource_group.practice_resource_group.name
   enabled_for_disk_encryption = true
@@ -46,8 +61,8 @@ resource "azurerm_key_vault" "practice_keyvault" {
   }
 
   network_acls {
-    bypass = AzureServices
-    default_action = Allow
+    bypass = "AzureServices"
+    default_action = "Allow"
   }
 }
 
