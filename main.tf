@@ -34,7 +34,7 @@ resource "azurerm_key_vault" "practice_keyvault" {
   location                    = azurerm_resource_group.practice_resource_group.location
   resource_group_name         = azurerm_resource_group.practice_resource_group.name
   enabled_for_disk_encryption = true
-  tenant_id                   = 
+  tenant_id                   = var.tenant_id
 
   sku_name = "standard"
 
