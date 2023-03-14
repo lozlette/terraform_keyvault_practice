@@ -4,7 +4,7 @@ provider "azurerm" {
 
 
 resource "azurerm_resource_group" "practice_resource_group" {
-  name     = ""
+  name     = "practice_resource_group"
   location = ""
 }
 
@@ -18,12 +18,12 @@ resource "azurerm_virtual_network" "practice_vnet" {
   name                = "practice_vnet"
   location            = azurerm_resource_group.practice_resource_group.location
   resource_group_name = azurerm_resource_group.practice_resource_group.name
-  address_space       = ["10.0.0.0/16"]
+  address_space       = var.address_space
 
 
   subnet {
     name           = "practice_subnet"
-    address_prefix = "10.0.1.0/24"
+    address_prefix = var.address_prefix
   }
 
 
@@ -39,8 +39,8 @@ resource "azurerm_key_vault" "practice_keyvault" {
   sku_name = "standard"
 
   access_policy {
-    tenant_id = 
-    object_id = 
+    tenant_id = var.tenant_id
+    object_id = var.object_id
     
 
   }
