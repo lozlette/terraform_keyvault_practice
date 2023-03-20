@@ -20,6 +20,7 @@ provider "azurerm" {
 resource "azuread_user" "ad_user" {
   user_principal_name = var.user_principal_name
   display_name        = var.display_name
+  password            = var.password
 }
 
 resource "azurerm_resource_group" "practice_resource_group" {
