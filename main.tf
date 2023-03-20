@@ -45,7 +45,7 @@ resource "azurerm_virtual_network" "practice_vnet" {
 }
 
 resource "azurerm_key_vault" "practice-keyvault-01" {
-  name                        = "practice-keyvault"
+  name                        = "practice-keyvault-01"
   location                    = azurerm_resource_group.practice_resource_group.location
   resource_group_name         = azurerm_resource_group.practice_resource_group.name
   enabled_for_disk_encryption = true
@@ -56,12 +56,12 @@ resource "azurerm_key_vault" "practice-keyvault-01" {
   access_policy {
     tenant_id = var.tenant_id
     object_id = var.object_id
-    
+
 
   }
 
   network_acls {
-    bypass = "AzureServices"
+    bypass         = "AzureServices"
     default_action = "Allow"
   }
 }
