@@ -56,12 +56,31 @@ resource "azurerm_key_vault" "practice-keyvault-01" {
     tenant_id = var.tenant_id
     object_id = var.object_id
 
+    key_permissions = [
+        "Create",
+        "Get",
+        ]
+
+    secret_permissions = [
+      "Set",
+      "Get",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
 
   }
+
 
   network_acls {
     bypass         = "AzureServices"
     default_action = "Allow"
   }
+}
+
+resource "azurerm_key_vault_secret" "practicesecret01" {
+  name         = "practicesecret01"
+  value        = var.secret_value
+  key_vault_id = azurerm_key_vault.practice-keyvault-01.id
 }
 
