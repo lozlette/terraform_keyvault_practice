@@ -40,7 +40,8 @@ resource "azurerm_network_security_group" "practice_sg" {
         source_port_range          = "22"
         destination_port_range     = "22"
         source_address_prefix      = "*"
-        destination_address_prefix = "*"
+        destination_address_prefix = azurerm_public_ip.pub_ip1.ip_address
+    
     }
 
     security_rule {
@@ -51,7 +52,7 @@ resource "azurerm_network_security_group" "practice_sg" {
         protocol                   = "*"
         source_port_range          = "22"
         destination_port_range     = "22"
-        source_address_prefix      = "*"
+        source_address_prefix      = azurerm_public_ip.pub_ip1.ip_address
         destination_address_prefix = "*"
     }
 }
