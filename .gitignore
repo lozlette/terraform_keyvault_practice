@@ -25,3 +25,7 @@ terraform.rc
 
 # Ignore variables file
 variables.tf
+
+# Ignore ssh key files
+key.pub
+key.pub.pub
