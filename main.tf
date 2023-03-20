@@ -7,7 +7,6 @@ terraform {
   }
 }
 
-
 provider "azurerm" {
   features {
     key_vault {
@@ -15,6 +14,10 @@ provider "azurerm" {
       recover_soft_deleted_key_vaults = true
     }
   }
+}
+
+data "local_file" "key" {
+  filename = var.key_file_path
 }
 
 # resource group
@@ -62,10 +65,10 @@ resource "azurerm_key_vault" "practice-keyvault-01" {
     object_id = var.object_id
 
     key_permissions = [
-        "Create",
-        "Get",
-        "List"
-        ]
+      "Create",
+      "Get",
+      "List"
+    ]
 
     secret_permissions = [
       "Set",
@@ -75,9 +78,7 @@ resource "azurerm_key_vault" "practice-keyvault-01" {
       "Recover",
       "List"
     ]
-
   }
-
 
   network_acls {
     bypass         = "AzureServices"
@@ -88,7 +89,7 @@ resource "azurerm_key_vault" "practice-keyvault-01" {
 # secret
 resource "azurerm_key_vault_secret" "vmpubkey1" {
   name         = "vmpubkey1"
-  value        = var.secret_value
+  value        = data.local_file.key.content
   key_vault_id = azurerm_key_vault.practice-keyvault-01.id
 }
 
@@ -102,17 +103,19 @@ resource "azurerm_network_interface" "network_interface" {
     name                          = "testconfiguration1"
     subnet_id                     = azurerm_subnet.practice_subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.pub_ip1.id
+    
   }
 }
 
 # vm 
-resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
-  location              = azurerm_resource_group.practice_resource_group.location
-  resource_group_name   = azurerm_resource_group.practice_resource_group.name
-  network_interface_ids = [azurerm_network_interface.network_interface.id]
-  vm_size               = "Standard_DS1_v2"
-  delete_os_disk_on_termination = true
+resource "azurerm_virtual_machine" "practice_vm" {
+  name                             = "${var.prefix}-vm"
+  location                         = azurerm_resource_group.practice_resource_group.location
+  resource_group_name              = azurerm_resource_group.practice_resource_group.name
+  network_interface_ids            = [azurerm_network_interface.network_interface.id]
+  vm_size                          = "Standard_DS1_v2"
+  delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
 
   storage_image_reference {
@@ -135,9 +138,17 @@ resource "azurerm_virtual_machine" "main" {
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-        key_data = azurerm_key_vault_secret.vmpubkey1.value
-        path = "/home/var.admin_username/.ssh/authorized_keys"
+      key_data = azurerm_key_vault_secret.vmpubkey1.value
+      path     = "/home/admin_username/.ssh/authorized_keys"
     }
   }
-  
+
+}
+
+# public ip 
+resource "azurerm_public_ip" "pub_ip1" {
+  name                = "pub_ip1"
+  resource_group_name = azurerm_resource_group.practice_resource_group.name
+  location            = azurerm_resource_group.practice_resource_group.location
+  allocation_method   = "Static"
 }
