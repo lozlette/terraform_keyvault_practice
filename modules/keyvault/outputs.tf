@@ -4,12 +4,12 @@ output "kv_id" {
 }
 
 output "secret_id" {
-    description = "ID of the secret"
-    value = azurerm_key_vault_secret.vmpubkey1.id
+  description = "ID of the secret"
+  value       = azurerm_key_vault_secret.vmpubkey1.id
 }
 
 output "secret_value" {
-    description = "The contents of the secret"
-    value = data.local_file.key.content
-    sensitive = true
+  description = "The contents of the secret"
+  value       = data.local_file.key.content
+  sensitive   = true
 }

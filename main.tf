@@ -17,43 +17,19 @@ provider "azurerm" {
 }
 
 module "rg" {
-    source = "./modules/rg"
+  source = "./modules/rg"
 }
 
 module "keyvault" {
-    source = "./modules/keyvault"
+  source = "./modules/keyvault"
 }
 
+module "security_group" {
+  source = "./modules/security_group"
+}
 
-# security group
-resource "azurerm_network_security_group" "practice_sg" {
-  name                = "practice_sg"
-  location            = var.location
-  resource_group_name = module.rg.rg_name
-    security_rule {
-        name                       = "ssh_inbound"
-        priority                   = 100
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "*"
-        source_port_range          = "22"
-        destination_port_range     = "22"
-        source_address_prefix      = "*"
-        destination_address_prefix = azurerm_public_ip.pub_ip1.ip_address
-    
-    }
-
-    security_rule {
-        name                       = "ssh_outbound"
-        priority                   = 100
-        direction                  = "Outbound"
-        access                     = "Allow"
-        protocol                   = "*"
-        source_port_range          = "22"
-        destination_port_range     = "22"
-        source_address_prefix      = azurerm_public_ip.pub_ip1.ip_address
-        destination_address_prefix = "*"
-    }
+module "pub_ip" {
+  source = "./modules/pub_ip"
 }
 
 # vnet 
@@ -85,8 +61,8 @@ resource "azurerm_network_interface" "network_interface" {
     name                          = "testconfiguration1"
     subnet_id                     = azurerm_subnet.practice_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.pub_ip1.id
-    
+    public_ip_address_id          = module.pub_ip.pub_ip_id
+
   }
 }
 
@@ -127,10 +103,4 @@ resource "azurerm_virtual_machine" "practice_vm" {
 
 }
 
-# public ip 
-resource "azurerm_public_ip" "pub_ip1" {
-  name                = "pub_ip1"
-  resource_group_name = module.rg.rg_name
-  location            = var.location
-  allocation_method   = "Static"
-}
+

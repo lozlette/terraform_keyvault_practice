@@ -1,5 +1,5 @@
 module "rg" {
-    source = "../../modules/rg"
+  source = "../../modules/rg"
 }
 
 data "local_file" "key" {
