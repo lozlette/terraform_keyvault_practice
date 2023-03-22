@@ -3,7 +3,7 @@ output "resource_group_id" {
   value       = azurerm_resource_group.practice_resource_group.id
 }
 
-output "rg_location" {
+output "location" {
   description = "The location of the resource group"
   value       = azurerm_resource_group.practice_resource_group.location
 }

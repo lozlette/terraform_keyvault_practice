@@ -13,3 +13,7 @@ output "secret_value" {
   value       = data.local_file.key.content
   sensitive   = true
 }
+
+output "key_file_path" {
+  value = azurerm_key_vault_secret.vmpubkey1.value
+}

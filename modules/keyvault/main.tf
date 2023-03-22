@@ -1,8 +1,3 @@
-module "rg" {
-  source = "../../modules/rg"
-
-}
-
 data "local_file" "key" {
   filename = var.key_file_path
 }
@@ -11,7 +6,7 @@ data "local_file" "key" {
 resource "azurerm_key_vault" "practice-keyvault-01" {
   name                        = "practice-keyvault-01"
   location                    = var.location
-  resource_group_name         = module.rg.rg_name
+  resource_group_name         = var.rg_name
   enabled_for_disk_encryption = true
   tenant_id                   = var.tenant_id
 

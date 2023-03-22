@@ -19,32 +19,47 @@ provider "azurerm" {
 module "rg" {
   source = "./modules/rg"
 
-  rg_location = module.rg.rg_location
-  rg_name = module.rg.rg_name
 }
 
 module "keyvault" {
   source = "./modules/keyvault"
 
-  secret_id = module.keyvault.secret_id
-  secret_value = module.keyvault.secret_value
-  kv_id = module.keyvault.kv_id
+  location = module.rg.location
+  rg_name  = module.rg.rg_name
 }
 
 module "security_group" {
   source = "./modules/security_group"
+
+  location       = module.rg.location
+  rg_name        = module.rg.rg_name
+  pub_ip_address = module.pub_ip.pub_ip_address
 }
 
 module "pub_ip" {
   source = "./modules/pub_ip"
+
+  location = module.rg.location
+  rg_name  = module.rg.rg_name
 }
 
 module "vm" {
   source = "./modules/vm"
+
+  location     = module.rg.location
+  rg_name      = module.rg.rg_name
+  secret_value = module.keyvault.secret_value
+  nic_id       = module.networking.nic_id
 }
 
 module "networking" {
   source = "./modules/networking"
+
+  location                   = module.rg.location
+  rg_name                    = module.rg.rg_name
+  pub_ip_id                  = module.pub_ip.pub_ip_id
+  address_prefixes           = module.networking.address_prefixes
+  virtual_network_subnet_ids = [module.networking.virtual_network_subnet_ids]
 }
 
 
