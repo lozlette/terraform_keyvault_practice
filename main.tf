@@ -18,10 +18,17 @@ provider "azurerm" {
 
 module "rg" {
   source = "./modules/rg"
+
+  rg_location = module.rg.rg_location
+  rg_name = module.rg.rg_name
 }
 
 module "keyvault" {
   source = "./modules/keyvault"
+
+  secret_id = module.keyvault.secret_id
+  secret_value = module.keyvault.secret_value
+  kv_id = module.keyvault.kv_id
 }
 
 module "security_group" {

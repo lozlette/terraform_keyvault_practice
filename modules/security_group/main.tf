@@ -1,5 +1,6 @@
 module "rg" {
   source = "../../modules/rg"
+
 }
 
 module "pub_ip" {
